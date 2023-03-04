@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Internet Billboard</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		
+		header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			text-align: center;
+		}
+		
+		#message {
+			font-size: 40px;
+			font-weight: bold;
+			text-align: center;
+			margin: 50px 0;
+		}
+		
+		form {
+			text-align: center;
+			margin-bottom: 50px;
+		}
+		
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			font-size: 20px;
+			cursor: pointer;
+		}
+		
+		input[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
+		
+		#message-history {
+			margin: 50px auto;
+			width: 50%;
+			border-collapse: collapse;
+		}
+		
+		#message-history th, #message-history td {
+			padding: 10px;
+			border: 1px solid #ddd;
+			text-align: center;
+		}
+		
+		#message-history th {
+			background-color: #f2f2f2;
+			color: #333;
+			font-weight: bold;
+		}
+		
+		#error-message {
+			color: red;
+			font-weight: bold;
+			text-align: center;
+			margin-top: 20px;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Internet Billboard</h1>
+	</header>
+	
+	<div id="message"></div>
+	
+	<form id="message-form">
+		<label for="message-text">Enter your message:</label><br>
+		<input type="text" id="message-text" name="message-text" required><br>
+		<label for="message-price">Enter your bid:</label><br>
+		<input type="number" id="message-price" name="message-price" required><br>
+		<input type="submit" value="Submit">
+	</form>
+	
+	<div id="error-message"></div>
+	
+	<table id="message-history">
+		<thead>
+			<tr>
+				<th>Message</th>
+				<th>Bid Price</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	
+	<script>
+		let messages = [];
+		let currentPrice = 0;
+		let currentMessage = "";
+		
+		const messageForm = document.getElementById("message-form");
+		const messageText = document.getElementById("message-text");
+		const messagePrice = document.getElementById("message-price");
+		const messageDisplay = document.getElementById("message");
+		const messageHistory = document.getElementById("message-history").getElementsByTagName("tbody")[0];
+		const errorMessage = document.getElementById("error-message");
+		
+		messageForm.addEventListener("submit", function(event) {
+			event.preventDefault();
+			
+			const price = parseInt(messagePrice.value);
+			const text = messageText.value;
+			
+			if (price !== NaN) {
+				currentPrice = price;
+				currentMessage = text;
+				messageDisplay.innerText = currentMessage;
+				
+				
+
+                if (text.trim() === "" || price.toString().trim() === "") {
+				errorMessage.innerText = "Please enter a message and bid price.";
+				errorMessage.style.display = "block";
+				return;
+			}
+			
+			if (price !== NaN) {
+				currentPrice = price;
+				currentMessage = text;
+				messageDisplay.innerText = currentMessage;
+				
+				messages.push({text: text, price: price});
+				
+				messageHistory.innerHTML = "";
+				
+				for (let i = 0; i < messages.length; i++) {
+					if (messages[i].text.trim() !== "" &&  messages[i].price.toString().trim() !== "") {
+						const row = messageHistory.insertRow(0);
+						const textCell = row.insertCell(0);
+						const priceCell = row.insertCell(1);
+						textCell.innerText = messages[i].text;
+						priceCell.innerText = messages[i].price;
+					}
+				}
+			}
+			
+			messageText.value = "";
+			messagePrice.value = "";
+			errorMessage.style.display = "none";
+		}});
+	</script>
+</body>
+</html>
